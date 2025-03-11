@@ -48,7 +48,7 @@ const Navbar = () => {
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/90 backdrop-blur-md shadow-sm py-2' 
+          ? 'bg-white/90 backdrop-blur-md shadow-sm py-2 ' 
           : 'bg-transparent py-4'
       }`}
     >
@@ -60,7 +60,7 @@ const Navbar = () => {
             className="flex items-center gap-2 text-lg md:text-xl font-semibold transition-transform duration-300 hover:scale-105"
           >
             <MapPin className="text-nature-600" />
-            <span className={`font-serif ${isScrolled ? 'text-nature-900' : 'text-nature-50'}`}>
+            <span className={`font-serif ${isScrolled ? 'text-nature-900' : 'text-nature-900'}`}>
               Yiaki Tours
             </span>
           </Link>
@@ -76,7 +76,7 @@ const Navbar = () => {
                     ? 'text-nature-700 bg-nature-50/50' 
                     : isScrolled 
                       ? 'text-gray-700 hover:text-nature-700 hover:bg-nature-50/50' 
-                      : 'text-white hover:text-white/90 hover:bg-white/10'
+                      : 'text-black hover:text-white/90 hover:bg-white/10'
                   }
                 `}
               >
@@ -89,7 +89,7 @@ const Navbar = () => {
                 <button
                   onClick={() => setShowAccountDropdown(!showAccountDropdown)}
                   className={`px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-all duration-300 ${
-                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-white hover:bg-white/10'
+                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-black hover:bg-white/10'
                   }`}
                 >
                   Account
@@ -117,7 +117,7 @@ const Navbar = () => {
                 <button
                   onClick={handleLogin}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-white hover:bg-white/10'
+                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-black hover:bg-white/10'
                   }`}
                 >
                   Login
@@ -125,7 +125,7 @@ const Navbar = () => {
                 <Link
                   to="/signup"
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-white hover:bg-white/10'
+                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-black hover:bg-white/10'
                   }`}
                 >
                   Signup
@@ -141,9 +141,9 @@ const Navbar = () => {
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <X className={isScrolled ? 'text-gray-800' : 'text-white'} />
+              <X className={isScrolled ? 'text-gray-800' : 'text-black'} />
             ) : (
-              <Menu className={isScrolled ? 'text-gray-800' : 'text-white'} />
+              <Menu className={isScrolled ? 'text-gray-800' : 'text-black'} />
             )}
           </button>
         </div>
@@ -200,13 +200,13 @@ const Navbar = () => {
               <>
                 <button
                   onClick={handleLogin}
-                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-gray-800 hover:bg-white/10"
+                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-black hover:bg-white/10"
                 >
                   Login
                 </button>
                 <Link
                   to="/signup"
-                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-gray-800 hover:bg-white/10"
+                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-black hover:bg-white/10"
                 >
                   Signup
                 </Link>
