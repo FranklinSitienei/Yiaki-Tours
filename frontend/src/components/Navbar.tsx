@@ -1,11 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, MapPin } from 'lucide-react';
+import { Menu, X, MapPin, ChevronDown } from 'lucide-react';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
   const location = useLocation();
 
   const navLinks = [
@@ -34,6 +35,15 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
+  const handleLogin = () => {
+    setIsLoggedIn(true); // Simulating login action
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false); // Simulating logout action
+    setShowAccountDropdown(false);
+  };
+
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -51,7 +61,7 @@ const Navbar = () => {
           >
             <MapPin className="text-nature-600" />
             <span className={`font-serif ${isScrolled ? 'text-nature-900' : 'text-nature-50'}`}>
-              NatureTrek
+              Yiaki Tours
             </span>
           </Link>
 
@@ -73,6 +83,55 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+
+            {isLoggedIn ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowAccountDropdown(!showAccountDropdown)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-all duration-300 ${
+                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-white hover:bg-white/10'
+                  }`}
+                >
+                  Account
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                {showAccountDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-md py-2">
+                    <Link 
+                      to="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-white/10"
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-white/10"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={handleLogin}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-white hover:bg-white/10'
+                  }`}
+                >
+                  Login
+                </button>
+                <Link
+                  to="/signup"
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-white hover:bg-white/10'
+                  }`}
+                >
+                  Signup
+                </Link>
+              </>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -122,6 +181,37 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            {isLoggedIn ? (
+              <>
+                <Link
+                  to="/profile"
+                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-gray-800 hover:bg-white/10"
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-gray-800 hover:bg-white/10"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={handleLogin}
+                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-gray-800 hover:bg-white/10"
+                >
+                  Login
+                </button>
+                <Link
+                  to="/signup"
+                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-gray-800 hover:bg-white/10"
+                >
+                  Signup
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </div>
