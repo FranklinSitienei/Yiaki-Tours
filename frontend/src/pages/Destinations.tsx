@@ -102,7 +102,7 @@ const DestinationPage = () => {
                     alt={tour.title}
                     className="w-full h-48 object-cover"
                   />
-                  <h3 className="text-lg font-semibold p-4">{tour.title}</h3>
+                  <h3 className="text-lg font-semibold p-4 mb-8">{tour.title}</h3>
                 </motion.div>
               </SwiperSlide>
             ))}
