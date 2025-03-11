@@ -26,20 +26,17 @@ const Index = () => {
 
         {/* About Section */}
         <section className="section py-24 bg-gradient-nature">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div
-              className="relative"
-              data-aos="fade-right"
-            >
-              <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=800&q=80"
-                  alt="Beautiful nature landscape"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="absolute top-1/2 left-0 transform -translate-x-1/4 -translate-y-1/2 w-24 h-24 bg-nature-100 rounded-full animate-image-glow"></div>
-            </div>
+        <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        {/* Image Section */}
+                        <div data-aos="fade-right" className="relative">
+                            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
+                                <img
+                                    src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=800&q=80"
+                                    alt="Beautiful nature landscape"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        </div>
 
             <div data-aos="fade-left">
               <span className="inline-block py-1 px-3 mb-3 text-sm font-medium rounded-full bg-nature-100 text-nature-700">
