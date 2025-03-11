@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import Tours from "./pages/Tours";
 import TourDetails from "./pages/TourDetails";
 import { allTours } from "./pages/ToursData";
+import AboutUs from "./pages/AboutUs";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/about" element={<AboutUs />} />
           <Route path="/tours" element={<Tours />} />
           <Route path="/tour/:id" element={<TourDetails tours={allTours} />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

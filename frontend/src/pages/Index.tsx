@@ -38,13 +38,6 @@ const Index = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -right-6 w-2/3 rounded-2xl overflow-hidden border-4 border-white shadow-xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1482938289607-e9573fc25ebb?auto=format&fit=crop&w=600&q=80" 
-                  alt="People hiking" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
               <div className="absolute top-1/2 left-0 transform -translate-x-1/4 -translate-y-1/2 w-24 h-24 bg-nature-100 rounded-full animate-image-glow"></div>
             </div>
             
