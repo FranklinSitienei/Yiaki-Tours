@@ -102,7 +102,7 @@ const Tours = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
-      <main className="flex-grow pt-16">
+      <main className="flex-grow">
         {/* Header Section */}
         <section className="relative h-80 overflow-hidden">
           <div 

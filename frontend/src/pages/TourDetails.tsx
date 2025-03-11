@@ -55,8 +55,28 @@ const TourDetails = ({ tours }) => {
   const calculatePrice = () => tour.basePrice + transportOptions[selectedTransport].cost;
 
   return (
-    <div className="flex flex-col min-h-screen mt-8">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
+      <main className="flex-grow">
+        {/* Header Section */}
+        <section className="relative h-80 overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ 
+              backgroundImage: "url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=80')",
+              filter: "brightness(0.7)",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60" />
+          <div className="relative h-full flex flex-col justify-center items-center text-center text-white px-4">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 animate-fade-in">
+              Such a nice pick you selected!
+            </h1>
+            <p className="max-w-2xl text-lg text-white/90 mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              Get Ready to experience travels that connect you with the world's most breathtaking natural environments.
+            </p>
+          </div>
+        </section>
       <motion.div
         className="p-4 max-w-4xl mx-auto flex-grow"
         initial={{ opacity: 0, y: 50 }}
@@ -198,6 +218,7 @@ const TourDetails = ({ tours }) => {
           </div>
         </div>
       </motion.div>
+      </main>
       <Footer />
     </div>
   );
