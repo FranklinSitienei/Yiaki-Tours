@@ -11,6 +11,7 @@ import { allTours } from "./pages/ToursData";
 import AboutUs from "./pages/AboutUs";
 import DestinationPage from "./pages/Destinations";
 import Profile from "./pages/Profile";
+import AuthPage from "./pages/Login";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/destinations" element={<DestinationPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/tours" element={<Tours />} />
+          <Route path="/login" element={<AuthPage />} />
           <Route path="/tour/:id" element={<TourDetails tours={allTours} />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

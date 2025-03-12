@@ -35,10 +35,6 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
-  const handleLogin = () => {
-    setIsLoggedIn(true); // Simulating login action
-  };
-
   const handleLogout = () => {
     setIsLoggedIn(false); // Simulating logout action
     setShowAccountDropdown(false);
@@ -48,7 +44,7 @@ const Navbar = () => {
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/90 backdrop-blur-md shadow-sm py-2 ' 
+          ? 'bg-white/90 backdrop-blur-md shadow-sm py-2' 
           : 'bg-transparent py-4'
       }`}
     >
@@ -113,24 +109,14 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <>
-                <button
-                  onClick={handleLogin}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-black hover:bg-white/10'
-                  }`}
-                >
-                  Login
-                </button>
-                <Link
-                  to="/signup"
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-black hover:bg-white/10'
-                  }`}
-                >
-                  Signup
-                </Link>
-              </>
+              <Link
+                to="/login"
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                  isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-black hover:bg-white/10'
+                }`}
+              >
+                Login/Signup
+              </Link>
             )}
           </nav>
 
@@ -197,20 +183,12 @@ const Navbar = () => {
                 </button>
               </>
             ) : (
-              <>
-                <button
-                  onClick={handleLogin}
-                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-black hover:bg-white/10"
-                >
-                  Login
-                </button>
-                <Link
-                  to="/signup"
-                  className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-black hover:bg-white/10"
-                >
-                  Signup
-                </Link>
-              </>
+              <Link
+                to="/login"
+                className="px-4 py-2 w-full text-center text-lg rounded-md font-medium text-black hover:bg-white/10"
+              >
+                Login/Signup
+              </Link>
             )}
           </nav>
         </div>
