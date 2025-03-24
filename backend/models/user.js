@@ -7,7 +7,11 @@ const User = sequelize.define('User', {
     autoIncrement: true,
     primaryKey: true,
   },
-  name: {
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -17,12 +21,18 @@ const User = sequelize.define('User', {
     allowNull: false,
   },
   password: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING, // Will be hashed when stored
   },
   googleId: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING, // For Google OAuth
   },
   appleId: {
+    type: DataTypes.STRING, // For Apple OAuth
+  },
+  homeAddress: {
+    type: DataTypes.STRING,
+  },
+  country: {
     type: DataTypes.STRING,
   },
   role: {

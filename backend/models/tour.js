@@ -11,25 +11,37 @@ const Tour = sequelize.define('Tour', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  description: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  destination: {
+  location: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  modeOfTransport: {
-    type: DataTypes.ENUM('bus', 'train', 'flight', 'car'),
+  duration: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  groupSize: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
   price: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
   },
+  image: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
   rating: {
     type: DataTypes.DECIMAL(3, 2),
     defaultValue: 0,
+  },
+  difficulty: {
+    type: DataTypes.ENUM('Easy', 'Moderate', 'Challenging'),
+    allowNull: false,
+  },
+  category: {
+    type: DataTypes.ENUM('Hiking', 'Wildlife', 'Photography', 'Cultural'),
+    allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,

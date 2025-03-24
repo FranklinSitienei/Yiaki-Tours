@@ -1,13 +1,11 @@
-
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Search, Calendar, MapPin, Users, Clock, ArrowUpDown, Filter, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { allTours, Tour } from "./ToursData";
 
 const Tours = () => {
-  const [tours, setTours] = useState<Tour[]>(allTours);
+  const [tours, setTours] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     difficulty: [] as string[],
@@ -16,41 +14,56 @@ const Tours = () => {
   });
   const [sortBy, setSortBy] = useState<string>("price-low");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
+
+  // Fetch tours from backend
   useEffect(() => {
-    // Scroll to top on page load
-    window.scrollTo(0, 0);
-    
-    // Filter and sort tours
-    let filteredTours = [...allTours];
-    
+    const fetchTours = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/tours");
+        if (!response.ok) {
+          throw new Error(`Error fetching tours: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setTours(data);
+      } catch (error) {
+        console.error("Failed to fetch tours:", error);
+      }
+    };
+
+    fetchTours();
+  }, []);
+
+  // Filter and sort tours
+  useEffect(() => {
+    let filteredTours = [...tours];
+
     // Search filter
     if (searchTerm) {
-      filteredTours = filteredTours.filter(tour => 
+      filteredTours = filteredTours.filter(tour =>
         tour.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         tour.location.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
+
     // Difficulty filter
     if (filters.difficulty.length > 0) {
-      filteredTours = filteredTours.filter(tour => 
+      filteredTours = filteredTours.filter(tour =>
         filters.difficulty.includes(tour.difficulty)
       );
     }
-    
+
     // Category filter
     if (filters.category.length > 0) {
-      filteredTours = filteredTours.filter(tour => 
+      filteredTours = filteredTours.filter(tour =>
         filters.category.includes(tour.category)
       );
     }
-    
+
     // Price range filter
-    filteredTours = filteredTours.filter(tour => 
+    filteredTours = filteredTours.filter(tour =>
       tour.price >= filters.priceRange.min && tour.price <= filters.priceRange.max
     );
-    
+
     // Sort tours
     if (sortBy === "price-low") {
       filteredTours.sort((a, b) => a.price - b.price);
@@ -61,9 +74,9 @@ const Tours = () => {
     } else if (sortBy === "duration") {
       filteredTours.sort((a, b) => parseInt(a.duration) - parseInt(b.duration));
     }
-    
+
     setTours(filteredTours);
-  }, [searchTerm, filters, sortBy]);
+  }, [searchTerm, filters, sortBy, tours]);
 
   const toggleFilter = (type: 'difficulty' | 'category', value: string) => {
     setFilters(prev => {
@@ -81,14 +94,14 @@ const Tours = () => {
       }
     });
   };
-  
+
   const handlePriceChange = (min: number, max: number) => {
     setFilters(prev => ({
       ...prev,
       priceRange: { min, max }
     }));
   };
-  
+
   const clearFilters = () => {
     setFilters({
       difficulty: [],
