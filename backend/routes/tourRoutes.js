@@ -10,6 +10,7 @@ const router = express.Router();
 // Tours Routes
 router.get('/', toursController.getAllTours);
 router.get('/:id', toursController.getTourById);
+router.post('/:id/book', authMiddleware, toursController.bookTour);
 router.post('/', adminMiddleware, toursController.createTour);
 router.put('/:id', adminMiddleware, toursController.updateTour);
 router.delete('/:id', adminMiddleware, toursController.deleteTour);

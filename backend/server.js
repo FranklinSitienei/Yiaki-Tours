@@ -12,7 +12,7 @@ const Tour = require('./models/tour');
 
 (async () => {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     console.log('Models synced with the database.');
   } catch (error) {
     console.error('Error syncing models:', error);

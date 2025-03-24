@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 
 const Tours = () => {
   const [tours, setTours] = useState([]);
+const [displayedTours, setDisplayedTours] = useState([]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     difficulty: [] as string[],
@@ -20,63 +22,59 @@ const Tours = () => {
     const fetchTours = async () => {
       try {
         const response = await fetch("http://localhost:3000/tours");
-        if (!response.ok) {
-          throw new Error(`Error fetching tours: ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`Error fetching tours: ${response.statusText}`);
         const data = await response.json();
         setTours(data);
+        setDisplayedTours(data); // also store initial unfiltered data
       } catch (error) {
         console.error("Failed to fetch tours:", error);
       }
     };
-
+  
     fetchTours();
   }, []);
+  
 
   // Filter and sort tours
   useEffect(() => {
-    let filteredTours = [...tours];
-
-    // Search filter
+    let filtered = [...tours];
+  
     if (searchTerm) {
-      filteredTours = filteredTours.filter(tour =>
+      filtered = filtered.filter(tour =>
         tour.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         tour.location.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
-    // Difficulty filter
+  
     if (filters.difficulty.length > 0) {
-      filteredTours = filteredTours.filter(tour =>
+      filtered = filtered.filter(tour =>
         filters.difficulty.includes(tour.difficulty)
       );
     }
-
-    // Category filter
+  
     if (filters.category.length > 0) {
-      filteredTours = filteredTours.filter(tour =>
+      filtered = filtered.filter(tour =>
         filters.category.includes(tour.category)
       );
     }
-
-    // Price range filter
-    filteredTours = filteredTours.filter(tour =>
+  
+    filtered = filtered.filter(tour =>
       tour.price >= filters.priceRange.min && tour.price <= filters.priceRange.max
     );
-
-    // Sort tours
+  
     if (sortBy === "price-low") {
-      filteredTours.sort((a, b) => a.price - b.price);
+      filtered.sort((a, b) => a.price - b.price);
     } else if (sortBy === "price-high") {
-      filteredTours.sort((a, b) => b.price - a.price);
+      filtered.sort((a, b) => b.price - a.price);
     } else if (sortBy === "rating") {
-      filteredTours.sort((a, b) => b.rating - a.rating);
+      filtered.sort((a, b) => b.rating - a.rating);
     } else if (sortBy === "duration") {
-      filteredTours.sort((a, b) => parseInt(a.duration) - parseInt(b.duration));
+      filtered.sort((a, b) => parseInt(a.duration) - parseInt(b.duration));
     }
-
-    setTours(filteredTours);
+  
+    setDisplayedTours(filtered);
   }, [searchTerm, filters, sortBy, tours]);
+  
 
   const toggleFilter = (type: 'difficulty' | 'category', value: string) => {
     setFilters(prev => {
@@ -336,7 +334,7 @@ const Tours = () => {
             
             {/* Tours Grid */}
             <div className="flex-1">
-              {tours.length === 0 ? (
+            {displayedTours.length === 0 ? (
                 <div className="text-center py-16">
                   <h3 className="text-xl font-medium mb-2">No tours found</h3>
                   <p className="text-gray-600 mb-4">Try adjusting your filters or search criteria</p>
@@ -349,7 +347,7 @@ const Tours = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {tours.map((tour, index) => (
+                  {displayedTours.map((tour, index) => (
                     <div 
                       key={tour.id}
                       className="group bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md"

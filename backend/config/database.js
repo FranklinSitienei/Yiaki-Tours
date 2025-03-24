@@ -15,4 +15,6 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   }
 })();
 
+console.log('Connecting to DB:', process.env.DB_NAME, process.env.DB_USER);
+
 module.exports = sequelize;

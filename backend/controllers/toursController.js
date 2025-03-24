@@ -5,8 +5,10 @@ const toursController = {
   async getAllTours(req, res) {
     try {
       const tours = await Tour.findAll();
+      console.log('Fetched tours:', tours); // 👈 Debug log
       res.status(200).json(tours);
     } catch (err) {
+      console.error('Error fetching tours:', err);
       res.status(500).json({ message: 'Failed to fetch tours', error: err.message });
     }
   },
@@ -21,6 +23,21 @@ const toursController = {
       res.status(500).json({ message: 'Failed to fetch the tour', error: err.message });
     }
   },
+
+  // Booking a tour
+async bookTour(req, res) {
+  const { id } = req.params;
+  try {
+    const tour = await Tour.findByPk(id);
+    if (!tour) return res.status(404).json({ message: 'Tour not found' });
+
+    // You might save booking info here to a new Booking model
+    res.status(200).json({ message: 'Tour booked successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to book tour', error: err.message });
+  }
+},
+
 
   // Create a new tour (admin only)
   async createTour(req, res) {
