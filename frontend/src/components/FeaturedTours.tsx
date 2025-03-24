@@ -1,7 +1,7 @@
-
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Calendar, MapPin, Users, Clock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 interface Tour {
   id: number;
@@ -14,50 +14,33 @@ interface Tour {
   rating: number;
 }
 
-const tours: Tour[] = [
-  {
-    id: 1,
-    title: "Alpine Wilderness Trek",
-    location: "Swiss Alps",
-    duration: "7 days",
-    groupSize: "4-12 people",
-    price: 1899,
-    image: "https://images.unsplash.com/photo-1458668383970-8ddd3927deed?auto=format&fit=crop&w=800&q=80",
-    rating: 4.9
-  },
-  {
-    id: 2,
-    title: "Ancient Forest Expedition",
-    location: "Pacific Northwest",
-    duration: "5 days",
-    groupSize: "2-8 people",
-    price: 1299,
-    image: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=80",
-    rating: 4.8
-  },
-  {
-    id: 3,
-    title: "Desert Canyon Adventure",
-    location: "Grand Canyon",
-    duration: "6 days",
-    groupSize: "4-10 people",
-    price: 1599,
-    image: "https://images.unsplash.com/photo-1482881497185-d4a9ddbe4151?auto=format&fit=crop&w=800&q=80",
-    rating: 4.7
-  }
-];
-
 const FeaturedTours = () => {
+  const [tours, setTours] = useState<Tour[]>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/tours');
+        const topThree = response.data.slice(0, 3); // pick top 3
+        setTours(topThree);
+      } catch (error) {
+        console.error("Error fetching featured tours:", error);
+      }
+    };
+
+    fetchTours();
+  }, []);
+
   useEffect(() => {
     const observerOptions = {
       root: null,
       rootMargin: '0px',
       threshold: 0.1
     };
-    
+
     const handleIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -66,24 +49,24 @@ const FeaturedTours = () => {
         }
       });
     };
-    
+
     const observer = new IntersectionObserver(handleIntersect, observerOptions);
-    
+
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
     }
-    
+
     cardRefs.current.forEach(card => {
       if (card) observer.observe(card);
     });
-    
+
     return () => observer.disconnect();
-  }, []);
-  
+  }, [tours]);
+
   return (
-    <section 
-      id="featured-tours" 
-      ref={sectionRef} 
+    <section
+      id="featured-tours"
+      ref={sectionRef}
       className="section opacity-0 transition-opacity duration-700"
     >
       <div className="text-center mb-12">
@@ -94,14 +77,14 @@ const FeaturedTours = () => {
           Featured Tours
         </h2>
         <p className="max-w-2xl mx-auto text-gray-600">
-          Discover our carefully selected tours in pristine natural environments, 
+          Discover our carefully selected tours in pristine natural environments,
           designed for unforgettable experiences and lasting memories.
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {tours.map((tour, index) => (
-          <div 
+          <div
             key={tour.id}
             ref={el => cardRefs.current[index] = el}
             className="group relative bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 opacity-0 transition-all duration-700"
@@ -109,18 +92,18 @@ const FeaturedTours = () => {
           >
             {/* Tour Image */}
             <div className="relative h-64 overflow-hidden">
-              <img 
-                src={tour.image} 
-                alt={tour.title} 
+              <img
+                src={tour.image}
+                alt={tour.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
-              
+
               {/* Price Tag */}
               <div className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full font-medium text-sm shadow-sm">
                 ${tour.price}
               </div>
-              
+
               {/* Rating */}
               <div className="absolute bottom-4 left-4 flex items-center gap-1 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium">
                 <svg className="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -129,18 +112,18 @@ const FeaturedTours = () => {
                 <span>{tour.rating}</span>
               </div>
             </div>
-            
+
             {/* Tour Info */}
             <div className="p-6">
               <h3 className="text-xl font-serif font-semibold mb-2 text-gray-900">
                 {tour.title}
               </h3>
-              
+
               <div className="flex items-center text-gray-600 mb-4">
                 <MapPin className="w-4 h-4 mr-1 text-nature-600" />
                 <span className="text-sm">{tour.location}</span>
               </div>
-              
+
               <div className="grid grid-cols-3 gap-2 mb-6">
                 <div className="flex flex-col items-center justify-center py-2 bg-gray-50 rounded-md">
                   <Clock className="w-4 h-4 text-nature-600 mb-1" />
@@ -155,9 +138,9 @@ const FeaturedTours = () => {
                   <span className="text-xs text-gray-600">All year</span>
                 </div>
               </div>
-              
-              <Link 
-                to={`/tours/${tour.id}`} 
+
+              <Link
+                to={`/tour/${tour.id}`}
                 className="inline-flex items-center justify-center w-full py-2.5 px-4 bg-nature-100 text-nature-700 rounded-md font-medium text-sm transition-colors duration-300 hover:bg-nature-200 hover:text-nature-800 group/link"
               >
                 Tour Details
@@ -167,10 +150,10 @@ const FeaturedTours = () => {
           </div>
         ))}
       </div>
-      
+
       <div className="text-center mt-12">
-        <Link 
-          to="/tours" 
+        <Link
+          to="/tours"
           className="inline-flex items-center justify-center py-2.5 px-5 bg-nature-600 text-white rounded-md font-medium transition-colors duration-300 hover:bg-nature-700 group"
         >
           View All Tours

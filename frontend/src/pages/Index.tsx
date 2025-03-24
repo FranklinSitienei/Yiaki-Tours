@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Hero from '../components/Hero';
 import FeaturedTours from '../components/FeaturedTours';
 import TestimonialSection from '../components/TestimonialSection';

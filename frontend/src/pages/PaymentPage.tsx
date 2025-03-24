@@ -48,6 +48,7 @@ const PaymentPage = () => {
       transition: { delay: i * 0.1, duration: 0.5 },
     }),
   };
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -84,19 +85,24 @@ const PaymentPage = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
             {paymentOptions.map((option, i) => (
               <motion.button
-                key={option.id}
-                onClick={() => setSelectedMethod(option.id)}
-                className={`flex flex-col items-center justify-center p-4 border rounded-xl transition-all duration-300 shadow-sm ${
-                  selectedMethod === option.id ? "border-blue-600 bg-blue-50" : "border-gray-200 bg-white"
-                }`}
-                variants={fadeIn}
-                custom={i}
-                initial="hidden"
-                animate="show"
-              >
-                {option.icon}
-                <span className="mt-2 text-sm font-medium">{option.label}</span>
-              </motion.button>
+              key={option.id}
+              onClick={() => setSelectedMethod(option.id)}
+              className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden ${
+                selectedMethod === option.id
+                  ? "bg-blue-50 border-blue-600 shadow-xl translate-y-[-4px]"
+                  : "bg-white border-gray-200 shadow-sm"
+              }`}
+              whileHover={{ scale: 1.05, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              variants={fadeIn}
+              custom={i}
+              initial="hidden"
+              animate="show"
+            >
+              <div className="mb-2">{option.icon}</div>
+              <span className="text-sm font-medium">{option.label}</span>
+            </motion.button>
+            
             ))}
           </div>
 
