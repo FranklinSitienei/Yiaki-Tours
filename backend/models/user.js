@@ -29,6 +29,10 @@ const User = sequelize.define('User', {
   appleId: {
     type: DataTypes.STRING, // For Apple OAuth
   },
+  avatar: {
+    type: DataTypes.STRING, // image URL or base64 string
+    allowNull: true,
+  },
   homeAddress: {
     type: DataTypes.STRING,
   },

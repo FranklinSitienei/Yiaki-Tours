@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaGoogle, FaApple } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -40,15 +41,15 @@ const AuthPage = () => {
 
     const payload = isLogin
       ? {
-          email: formData.email,
-          password: formData.password,
-        }
+        email: formData.email,
+        password: formData.password,
+      }
       : {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-        };
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      };
 
     if (!isLogin && formData.password !== formData.confirmPassword) {
       alert("Passwords do not match.");
@@ -86,11 +87,10 @@ const AuthPage = () => {
       <Navbar />
       <main className="flex-grow flex items-center justify-center py-10 bg-gradient-to-r from-white via-green-300 to-nature-300">
         <div
-          className={`flex w-4/5 max-w-5xl shadow-2xl rounded-lg overflow-hidden transform transition-all duration-700 mt-8 ${
-            isLogin ? "animate-flipLogin" : "animate-flipSignup"
-          }`}
-          style={{ maxHeight: "80vh" }}
+          className={`flex flex-col md:flex-row w-11/12 max-w-6xl shadow-2xl rounded-lg overflow-hidden transform transition-all duration-700 mt-8 ${isLogin ? "animate-flipLogin" : "animate-flipSignup"
+            }`}
         >
+
           {/* Left Image */}
           <div className="w-1/2 relative">
             <img
@@ -203,9 +203,9 @@ const AuthPage = () => {
 
             <button
               onClick={() => handleOAuthLogin("google")}
-              className="w-full flex items-center justify-center gap-3 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition transform hover:scale-105 mb-3"
+              className="w-full flex items-center justify-center gap-3 bg-gray-50 text-black py-2 rounded-lg hover:bg-gray-200 transition transform hover:scale-105 mb-3"
             >
-              <FaGoogle />
+              <FcGoogle />
               {isLogin ? "Login with Google" : "Sign Up with Google"}
             </button>
 

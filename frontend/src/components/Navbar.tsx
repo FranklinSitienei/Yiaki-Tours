@@ -7,7 +7,17 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
+  const [user, setUser] = useState(null);
   const location = useLocation();
+
+
+  // On mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -41,18 +51,17 @@ const Navbar = () => {
   };
 
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-white/90 backdrop-blur-md shadow-sm py-2' 
-          : 'bg-transparent py-4'
-      }`}
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-white/90 backdrop-blur-md shadow-sm py-2'
+        : 'bg-transparent py-4'
+        }`}
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="flex items-center gap-2 text-lg md:text-xl font-semibold transition-transform duration-300 hover:scale-105"
           >
             <MapPin className="text-nature-600" />
@@ -68,10 +77,10 @@ const Navbar = () => {
                 key={link.name}
                 to={link.path}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 
-                  ${location.pathname === link.path 
-                    ? 'text-nature-700 bg-nature-50/50' 
-                    : isScrolled 
-                      ? 'text-gray-700 hover:text-nature-700 hover:bg-nature-50/50' 
+                  ${location.pathname === link.path
+                    ? 'text-nature-700 bg-nature-50/50'
+                    : isScrolled
+                      ? 'text-gray-700 hover:text-nature-700 hover:bg-nature-50/50'
                       : 'text-black hover:text-white/90 hover:bg-white/10'
                   }
                 `}
@@ -80,28 +89,41 @@ const Navbar = () => {
               </Link>
             ))}
 
-            {isLoggedIn ? (
+            {user ? (
               <div className="relative">
                 <button
                   onClick={() => setShowAccountDropdown(!showAccountDropdown)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-all duration-300 ${
-                    isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-black hover:bg-white/10'
-                  }`}
+                  className="flex items-center gap-2 text-sm font-medium"
                 >
-                  Account
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt="User Avatar"
+                      className="w-8 h-8 rounded-full object-cover border border-gray-300"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gray-300 text-white flex items-center justify-center font-bold uppercase">
+                      {user.firstName?.[0]}
+                    </div>
+                  )}
                   <ChevronDown className="w-4 h-4" />
                 </button>
+
                 {showAccountDropdown && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-md py-2">
-                    <Link 
+                    <Link
                       to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-white/10"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-nature-100"
                     >
                       Profile
                     </Link>
                     <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-white/10"
+                      onClick={() => {
+                        localStorage.clear();
+                        setUser(null);
+                        setShowAccountDropdown(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-nature-100"
                     >
                       Logout
                     </button>
@@ -111,17 +133,17 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
-                  isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-black hover:bg-white/10'
-                }`}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${isScrolled ? 'text-gray-700 hover:text-nature-700' : 'text-black hover:bg-white/10'
+                  }`}
               >
                 Login/Signup
               </Link>
             )}
+
           </nav>
 
           {/* Mobile Menu Button */}
-          <button 
+          <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 rounded-md transition-colors"
             aria-label="Toggle menu"
@@ -136,14 +158,13 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      <div 
-        className={`md:hidden fixed inset-0 z-40 bg-white transform transition-transform duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+      <div
+        className={`md:hidden fixed inset-0 z-40 bg-white transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
       >
         <div className="flex flex-col h-full">
           <div className="flex justify-end p-4">
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="p-2 rounded-md text-gray-800"
               aria-label="Close menu"
@@ -158,8 +179,8 @@ const Navbar = () => {
                 key={link.name}
                 to={link.path}
                 className={`px-4 py-2 w-full text-center text-lg rounded-md font-medium transition-colors
-                  ${location.pathname === link.path 
-                    ? 'text-nature-700 bg-nature-50' 
+                  ${location.pathname === link.path
+                    ? 'text-nature-700 bg-nature-50'
                     : 'text-gray-800 hover:text-nature-700 hover:bg-nature-50'
                   }
                 `}

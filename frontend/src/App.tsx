@@ -13,6 +13,7 @@ import DestinationPage from "./pages/Destinations";
 import Profile from "./pages/Profile";
 import AuthPage from "./pages/Login";
 import PaymentPage from "./pages/PaymentPage";
+import EditProfile from "./pages/EditProfile";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/about" element={<AboutUs />} />
           <Route path="/destinations" element={<DestinationPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/tours" element={<Tours />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/login" element={<AuthPage />} />
