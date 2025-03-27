@@ -47,8 +47,10 @@ const TourDetails = () => {
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState("");
   const [replies, setReplies] = useState<{ [key: number]: string }>({});
-
-
+  const [openReplies, setOpenReplies] = useState<{ [key: number]: boolean }>({});
+  const [showReplyInput, setShowReplyInput] = useState<{ [key: number]: boolean }>({});
+  const [commentLikes, setCommentLikes] = useState<{ [key: number]: boolean }>({});
+  const [replyLikes, setReplyLikes] = useState<{ [key: number]: boolean }>({});
 
   const token = localStorage.getItem("token");
 
@@ -202,6 +204,33 @@ const TourDetails = () => {
     alert("Link copied to clipboard!");
   };
 
+  const timeSince = (date: string) => {
+    const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+    const intervals = [
+      { label: "year", seconds: 31536000 },
+      { label: "month", seconds: 2592000 },
+      { label: "day", seconds: 86400 },
+      { label: "hour", seconds: 3600 },
+      { label: "minute", seconds: 60 },
+      { label: "second", seconds: 1 },
+    ];
+
+    for (let i = 0; i < intervals.length; i++) {
+      const interval = intervals[i];
+      const count = Math.floor(seconds / interval.seconds);
+      if (count >= 1) return `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
+    }
+    return "Just now";
+  };
+
+  const toggleCommentLike = (id: number) => {
+    setCommentLikes((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const toggleReplyLike = (id: number) => {
+    setReplyLikes((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
   const shareOptions = [
     {
       name: "Facebook",
@@ -259,7 +288,7 @@ const TourDetails = () => {
             <CardContent className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-3xl font-bold">{tour.title}</h2>
-                
+
               </div>
 
               <p className="text-gray-600 mb-4">
@@ -284,7 +313,7 @@ const TourDetails = () => {
                     />
                   )
                 )}
-                
+
               </div>
 
               <div className="mb-4">
@@ -319,51 +348,51 @@ const TourDetails = () => {
                 </Button>
               </div>
               <div className="flex items-center gap-10">
-                  <button onClick={handleLike}>
-                    {liked ? (
-                      <AiFillHeart className="text-red-600 w-6 h-6" />
-                    ) : (
-                      <AiOutlineHeart className="w-6 h-6" />
-                    )}
+                <button onClick={handleLike}>
+                  {liked ? (
+                    <AiFillHeart className="text-red-600 w-6 h-6" />
+                  ) : (
+                    <AiOutlineHeart className="w-6 h-6" />
+                  )}
+                </button>
+                <button onClick={handleBookmark}>
+                  {bookmarked ? (
+                    <BsBookmarkFill className="text-yellow-600 w-5 h-5" />
+                  ) : (
+                    <BsBookmark className="w-5 h-5" />
+                  )}
+                </button>
+                <div className="relative">
+                  <button onClick={() => setShowShareMenu(!showShareMenu)}>
+                    <AiOutlineShareAlt className="w-6 h-6" />
                   </button>
-                  <button onClick={handleBookmark}>
-                    {bookmarked ? (
-                      <BsBookmarkFill className="text-yellow-600 w-5 h-5" />
-                    ) : (
-                      <BsBookmark className="w-5 h-5" />
-                    )}
-                  </button>
-                  <div className="relative">
-                    <button onClick={() => setShowShareMenu(!showShareMenu)}>
-                      <AiOutlineShareAlt className="w-6 h-6" />
-                    </button>
-                    {showShareMenu && (
-                      <div className="absolute right-0 mt-2 bg-white rounded-md shadow-md p-2 z-20 w-40">
-                        {shareOptions.map((option) => (
-                          <button
-                            key={option.name}
-                            onClick={() =>
-                              window.open(option.url, "_blank")
-                            }
-                            className="flex items-center gap-2 w-full px-2 py-1 text-sm hover:bg-gray-100"
-                          >
-                            {option.icon}
-                            {option.name}
-                          </button>
-                        ))}
+                  {showShareMenu && (
+                    <div className="absolute right-0 mt-2 bg-white rounded-md shadow-md p-2 z-20 w-40">
+                      {shareOptions.map((option) => (
                         <button
-                          onClick={handleCopyLink}
+                          key={option.name}
+                          onClick={() =>
+                            window.open(option.url, "_blank")
+                          }
                           className="flex items-center gap-2 w-full px-2 py-1 text-sm hover:bg-gray-100"
                         >
-                          📋 Copy Link
+                          {option.icon}
+                          {option.name}
                         </button>
-                      </div>
-                    )}
-                  </div>
-                  <Button onClick={() => setShowComments((prev) => !prev)}>
-                    {showComments ? "Hide Comments" : "Show Comments"}
-                  </Button>
+                      ))}
+                      <button
+                        onClick={handleCopyLink}
+                        className="flex items-center gap-2 w-full px-2 py-1 text-sm hover:bg-gray-100"
+                      >
+                        📋 Copy Link
+                      </button>
+                    </div>
+                  )}
                 </div>
+                <Button onClick={() => setShowComments((prev) => !prev)}>
+                  {showComments ? "Hide Comments" : "Show Comments"}
+                </Button>
+              </div>
             </CardContent>
             <AnimatePresence>
               {showComments && (
@@ -383,67 +412,143 @@ const TourDetails = () => {
                       transition={{ duration: 0.3 }}
                       className="mb-6 p-3 rounded-xl shadow-sm border border-gray-200 bg-gray-50 hover:shadow-md transition-all"
                     >
-                      <div className="flex items-center gap-3 mb-2">
-                        <img
-                          src={comment.user?.avatar}
-                          alt="avatar"
-                          className="w-9 h-9 rounded-full object-cover"
-                        />
-                        <div>
-                          <p className="font-medium text-gray-800">
-                            {comment.user?.firstName} {comment.user?.lastName}
-                            {comment.user?.role === "admin" && (
-                              <span className="ml-2 text-blue-600 text-xs flex items-center gap-1">
-                                <MdAdminPanelSettings className="text-sm" />
-                                Admin
-                              </span>
-                            )}
-                          </p>
-                        </div>
-                      </div>
-                      <p className="text-sm text-gray-700 pl-12">{comment.content}</p>
-
-                      {/* Replies */}
-                      {comment.replies?.map((reply) => (
-                        <motion.div
-                          key={reply.id}
-                          initial={{ opacity: 0, x: 10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          className="ml-12 mt-3 flex gap-3"
-                        >
+                      <div className="flex justify-between items-center mb-1">
+                        <div className="flex items-center gap-3">
                           <img
-                            src={reply.user?.avatar}
+                            src={comment.user?.avatar || "/placeholder-avatar.png"}
                             alt="avatar"
-                            className="w-8 h-8 rounded-full object-cover mt-1"
+                            className="w-9 h-9 rounded-full object-cover"
                           />
-                          <div>
-                            <p className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                              {reply.user?.firstName} {reply.user?.lastName}
-                              {reply.user?.role === "admin" && (
+                          <div className="text-sm">
+                            <p className="font-semibold text-gray-800 flex items-center gap-2">
+                              {comment.user?.firstName} {comment.user?.lastName}
+                              {comment.user?.role === "admin" && (
                                 <span className="text-blue-600 text-xs flex items-center gap-1">
                                   <MdAdminPanelSettings className="text-sm" />
                                   Admin
                                 </span>
                               )}
                             </p>
-                            <p className="text-sm text-gray-700">{reply.content}</p>
                           </div>
-                        </motion.div>
-                      ))}
+                        </div>
+                        <span className="text-xs text-gray-500">{timeSince(comment.createdAt)}</span>
+                      </div>
 
-                      {/* Reply Input */}
-                      <div className="mt-4 ml-12 flex items-start gap-3">
-                        <input
-                          value={replies[comment.id] || ""}
-                          onChange={(e) =>
-                            setReplies({ ...replies, [comment.id]: e.target.value })
+                      <div className="flex justify-between items-start mt-1">
+                        <p className="text-sm text-gray-700 pl-12 max-w-[90%]">{comment.content}</p>
+                        <button onClick={() => toggleCommentLike(comment.id)}>
+                          {commentLikes[comment.id] ? (
+                            <AiFillHeart className="text-red-500 w-4 h-4 mt-1" />
+                          ) : (
+                            <AiOutlineHeart className="text-gray-400 w-4 h-4 mt-1" />
+                          )}
+                        </button>
+                      </div>
+
+                      <div className="flex gap-6 text-sm text-blue-600 mt-2 ml-12 items-center">
+                      {!showReplyInput[comment.id] ? (
+                          <button
+                            onClick={() =>
+                              setShowReplyInput((prev) => ({ ...prev, [comment.id]: true }))
+                            }
+                            className="text-gray-600 hover:text-blue-600 transition"
+                          >
+                            Reply
+                          </button>
+                        ) : null}
+                        <button
+                          onClick={() =>
+                            setOpenReplies((prev) => ({
+                              ...prev,
+                              [comment.id]: !prev[comment.id],
+                            }))
                           }
-                          placeholder="Write a reply..."
-                          className="flex-1 border border-gray-300 p-2 rounded-lg focus:ring-blue-300 focus:ring-1 outline-none"
-                        />
-                        <Button size="sm" onClick={() => postReply(comment.id)}>
-                          Reply
-                        </Button>
+                          className="hover:underline"
+                        >
+                          {openReplies[comment.id]
+                            ? "Hide Replies"
+                            : `View Replies (${comment.replies?.length || 0})`}
+                        </button>                      
+                      </div>
+
+                      {/* Replies */}
+                      <AnimatePresence>
+                        {openReplies[comment.id] &&
+                          comment.replies?.map((reply: any) => (
+                            <motion.div
+                              key={reply.id}
+                              initial={{ opacity: 0, x: 10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              className="ml-12 mt-3 flex flex-col gap-1"
+                            >
+                              <div className="flex justify-between items-center">
+                                <div className="flex gap-3 items-center">
+                                  <img
+                                    src={reply.user?.avatar || "/placeholder-avatar.png"}
+                                    alt="avatar"
+                                    className="w-8 h-8 rounded-full object-cover"
+                                  />
+                                  <p className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                                    {reply.user?.firstName} {reply.user?.lastName}
+                                    {reply.user?.role === "admin" && (
+                                      <span className="text-blue-600 text-xs flex items-center gap-1">
+                                        <MdAdminPanelSettings className="text-sm" />
+                                        Admin
+                                      </span>
+                                    )}
+                                  </p>
+                                </div>
+                                <span className="text-xs text-gray-500">{timeSince(reply.createdAt)}</span>
+                              </div>
+
+                              <div className="flex justify-between items-start">
+                                <p className="text-sm text-gray-700 ml-11 max-w-[90%]">{reply.content}</p>
+                                <button onClick={() => toggleReplyLike(reply.id)}>
+                                  {replyLikes[reply.id] ? (
+                                    <AiFillHeart className="text-red-500 w-4 h-4 mt-1" />
+                                  ) : (
+                                    <AiOutlineHeart className="text-gray-400 w-4 h-4 mt-1" />
+                                  )}
+                                </button>
+                              </div>
+                            </motion.div>
+                          ))}
+                      </AnimatePresence>
+
+                      {/* Reply Input Toggle */}
+                      <div className="mt-3 ml-12">
+                        {showReplyInput[comment.id] && (
+                          <div className="flex items-start gap-2 mt-2 ml-12">
+                            <input
+                              value={replies[comment.id] || ""}
+                              onChange={(e) =>
+                                setReplies({ ...replies, [comment.id]: e.target.value })
+                              }
+                              placeholder="Write a reply..."
+                              className="flex-1 border border-gray-300 p-2 rounded-lg focus:ring-blue-300 focus:ring-1 outline-none"
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => postReply(comment.id)}
+                              >
+                                Reply
+                              </Button>
+                              <button
+                                className="text-sm text-gray-500 hover:text-red-500"
+                                onClick={() =>
+                                  setShowReplyInput((prev) => ({
+                                    ...prev,
+                                    [comment.id]: false,
+                                  }))
+                                }
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
                       </div>
                     </motion.div>
                   ))}
