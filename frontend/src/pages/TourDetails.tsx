@@ -65,8 +65,8 @@ const TourDetails = () => {
 
         setLiked(data.liked?.includes(tourId));
         setBookmarked(data.bookmarks?.includes(tourId));
-        const match = data.ratings?.find((r) => r.tourId === tourId);
-        if (match) setRated(match.rating);
+        // Optional: If backend returns rated tours with value
+        setRated(data.ratings?.find(r => r.tourId === tourId)?.rating || 0);
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
       }
@@ -284,10 +284,11 @@ const TourDetails = () => {
                     <button
                       key={key}
                       onClick={() => setSelectedTransport(key)}
-                      className={`flex items-center gap-2 px-4 py-2 border rounded-lg ${selectedTransport === key
+                      className={`flex items-center gap-2 px-4 py-2 border rounded-lg ${
+                        selectedTransport === key
                           ? "bg-blue-100 border-blue-500"
                           : "bg-gray-100"
-                        }`}
+                      }`}
                     >
                       {option.icon}
                       {option.label}

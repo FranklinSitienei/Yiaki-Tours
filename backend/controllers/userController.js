@@ -52,7 +52,7 @@ exports.loginUser = async (req, res) => {
 // Get profile/account of the user
 exports.getProfile = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     const user = await User.findByPk(userId, {
       attributes: ['id', 'firstName', 'lastName', 'email', 'avatar'],
@@ -69,32 +69,37 @@ exports.getProfile = async (req, res) => {
           attributes: ['id'],
           through: { attributes: [] },
         },
-        {
-          model: Tour,
-          as: 'RatedTours',
-          attributes: ['id'],
-          through: {
-            attributes: ['rating'],
-          },
-        },
       ],
     });
 
-    const bookmarks = user.BookmarkedTours.map((t) => t.id);
-    const liked = user.LikedTours.map((t) => t.id);
-    const ratings = user.RatedTours.map((t) => ({
-      tourId: t.id,
-      rating: t.Rating.rating, // Join table value
+    if (!user) {
+      console.log("No user found!");
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const bookmarks = user.BookmarkedTours.map(t => t.id);
+    const liked = user.LikedTours.map(t => t.id);
+
+    // ✅ Fetch ratings from Rating model
+    const ratingsData = await Rating.findAll({
+      where: { userId },
+      attributes: ['tourId', 'rating'],
+    });
+
+    const ratings = ratingsData.map(r => ({
+      tourId: r.tourId,
+      rating: r.rating,
     }));
 
     res.status(200).json({
       user,
       bookmarks,
+      bookings: [], // still a placeholder
       liked,
-      ratings,
-      bookings: [], // Add if needed
+      ratings, // ✅ include in response
     });
   } catch (err) {
+    console.error("Error in getProfile:", err);
     res.status(500).json({ message: 'Failed to fetch profile', error: err.message });
   }
 };
