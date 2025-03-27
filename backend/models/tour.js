@@ -47,6 +47,9 @@ const Tour = sequelize.define('Tour', {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+}, {
+  freezeTableName: true, // ✅ Prevents automatic pluralization
+  tableName: 'tours',    // ✅ Forces Sequelize to use your existing table
 });
 
 module.exports = Tour;

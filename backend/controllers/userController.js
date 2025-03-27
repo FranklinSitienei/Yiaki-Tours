@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
 const { generateToken } = require('../utils/jwt');
+const { Op } = require("sequelize");
 const User = require('../models/user');
+const Tour = require('../models/tour');
+const Rating = require('../models/rating');
 
 // Form-based Registration
 exports.registerUser = async (req, res) => {
@@ -52,19 +55,44 @@ exports.getProfile = async (req, res) => {
     const userId = req.user.id;
 
     const user = await User.findByPk(userId, {
-      attributes: ['id', 'firstName', 'lastName', 'email', 'avatar']
+      attributes: ['id', 'firstName', 'lastName', 'email', 'avatar'],
+      include: [
+        {
+          model: Tour,
+          as: 'BookmarkedTours',
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
+        {
+          model: Tour,
+          as: 'LikedTours',
+          attributes: ['id'],
+          through: { attributes: [] },
+        },
+        {
+          model: Tour,
+          as: 'RatedTours',
+          attributes: ['id'],
+          through: {
+            attributes: ['rating'],
+          },
+        },
+      ],
     });
 
-    // Simulate IDs (replace with joins from models if available)
-    const bookmarks = [1, 2];
-    const bookings = [3, 4];
-    const liked = [5, 6];
+    const bookmarks = user.BookmarkedTours.map((t) => t.id);
+    const liked = user.LikedTours.map((t) => t.id);
+    const ratings = user.RatedTours.map((t) => ({
+      tourId: t.id,
+      rating: t.Rating.rating, // Join table value
+    }));
 
     res.status(200).json({
       user,
       bookmarks,
-      bookings,
-      liked
+      liked,
+      ratings,
+      bookings: [], // Add if needed
     });
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch profile', error: err.message });
@@ -80,7 +108,7 @@ exports.updateProfile = async (req, res) => {
     const updateData = { firstName, lastName, email, homeAddress, country };
 
     if (req.file) {
-      updateData.avatar = `/uploads/avatars/${req.file.filename}`;
+      updateData.avatar = `${req.protocol}://${req.get('host')}/uploads/avatars/${req.file.filename}`;
     }
 
     await User.update(updateData, { where: { id: userId } });

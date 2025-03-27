@@ -54,6 +54,11 @@ const Profile = () => {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredTours.map((tour) => (
+          <div
+          key={tour.id}
+          onClick={() => navigate(`/tour/${tour.id}`)}
+          className="cursor-pointer"
+        >
           <motion.div
             key={tour.id}
             initial={{ opacity: 0, scale: 0.9 }}
@@ -91,6 +96,7 @@ const Profile = () => {
               )}
             </div>
           </motion.div>
+          </div>
         ))}
       </div>
     );

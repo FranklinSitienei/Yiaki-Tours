@@ -19,6 +19,10 @@ router.delete('/:id', adminMiddleware, toursController.deleteTour);
 router.post('/:tourId/comments', authMiddleware, commentsController.createComment);
 router.get('/:tourId/comments', commentsController.getComments);
 router.delete('/comments/:commentId', authMiddleware, commentsController.deleteComment);
+router.post('/:id/like', authMiddleware, toursController.likeTour);
+router.post('/:id/bookmark', authMiddleware, toursController.bookmarkTour);
+router.post('/:id/rate', authMiddleware, toursController.rateTour);
+router.post('/:id/unrate', authMiddleware, toursController.unrateTour);
 
 // Replies Routes
 router.post('/comments/:commentId/replies', authMiddleware, repliesController.createReply);

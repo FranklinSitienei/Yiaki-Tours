@@ -13,11 +13,26 @@ const Navbar = () => {
 
   // On mount
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+  
+        const res = await fetch("http://localhost:3000/users/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        const data = await res.json();
+        setUser(data.user);
+      } catch (err) {
+        console.error("Failed to fetch user in navbar:", err);
+      }
+    };
+  
+    fetchUser();
+  }, []);  
 
   const navLinks = [
     { name: 'Home', path: '/' },

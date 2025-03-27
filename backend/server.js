@@ -8,7 +8,10 @@ const tourRoutes = require('./routes/tourRoutes');
 const userRoutes = require('./routes/userRoutes'); 
 const adminRoutes = require('./routes/adminRoutes'); 
 const sequelize = require('./config/database');
+const path = require("path");
 const Tour = require('./models/tour');
+
+require('./models/index');
 
 (async () => {
   try {
@@ -25,6 +28,9 @@ const app = express();
 app.use(cors()); // Allow all origins
 // If you want to restrict origins, use:
 // app.use(cors({ origin: 'http://localhost:8080' }));
+
+// Serve static files in uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(express.json()); // Parse JSON request bodies
 
