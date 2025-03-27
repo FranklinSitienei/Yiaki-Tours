@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { TfiCommentsSmiley } from "react-icons/tfi";
 import {
   AiOutlineHeart,
   AiFillHeart,
@@ -27,6 +28,10 @@ import {
 } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { FaUserCircle } from "react-icons/fa";
+import { MdAdminPanelSettings } from "react-icons/md";
+import { AnimatePresence } from "framer-motion";
+
 
 const TourDetails = () => {
   const { id } = useParams();
@@ -38,6 +43,12 @@ const TourDetails = () => {
   const [booked, setBooked] = useState(false);
   const [selectedTransport, setSelectedTransport] = useState("plane");
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState<any[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [replies, setReplies] = useState<{ [key: number]: string }>({});
+
+
 
   const token = localStorage.getItem("token");
 
@@ -75,6 +86,45 @@ const TourDetails = () => {
     fetchTour();
     fetchUserInteractions();
   }, [id]);
+
+  useEffect(() => {
+    if (showComments) fetchComments();
+  }, [showComments]);
+
+  const fetchComments = async () => {
+    const res = await fetch(`http://localhost:3000/tours/${id}/comments`);
+    const data = await res.json();
+    setComments(data);
+  };
+
+  const postComment = async () => {
+    if (!newComment.trim()) return;
+    const res = await fetch(`http://localhost:3000/tours/${id}/comments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ content: newComment }),
+    });
+    setNewComment("");
+    fetchComments();
+  };
+
+  const postReply = async (commentId: number) => {
+    if (!replies[commentId]?.trim()) return;
+    const res = await fetch(`http://localhost:3000/tours/comments/${commentId}/replies`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ content: replies[commentId] }),
+    });
+    setReplies((prev) => ({ ...prev, [commentId]: "" }));
+    fetchComments();
+  };
+
 
   const transportOptions = {
     plane: { label: "Airplane", cost: 300, icon: <FaPlane /> },
@@ -251,6 +301,9 @@ const TourDetails = () => {
                       </div>
                     )}
                   </div>
+                  <Button onClick={() => setShowComments((prev) => !prev)}>
+                    {showComments ? "Hide Comments" : "Show Comments"}
+                  </Button>
                 </div>
               </div>
 
@@ -284,11 +337,10 @@ const TourDetails = () => {
                     <button
                       key={key}
                       onClick={() => setSelectedTransport(key)}
-                      className={`flex items-center gap-2 px-4 py-2 border rounded-lg ${
-                        selectedTransport === key
-                          ? "bg-blue-100 border-blue-500"
-                          : "bg-gray-100"
-                      }`}
+                      className={`flex items-center gap-2 px-4 py-2 border rounded-lg ${selectedTransport === key
+                        ? "bg-blue-100 border-blue-500"
+                        : "bg-gray-100"
+                        }`}
                     >
                       {option.icon}
                       {option.label}
@@ -310,6 +362,107 @@ const TourDetails = () => {
                 </Button>
               </div>
             </CardContent>
+            <AnimatePresence>
+              {showComments && (
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  className="md:w-[100%] w-full mt-8 md:mt-0 bg-white rounded-xl shadow-xl p-4 border border-gray-100"
+                >
+                  <h2 className="text-xl font-bold mb-4">💬 Comments</h2>
+                  {comments.map((comment) => (
+                    <motion.div
+                      key={comment.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="mb-6 p-3 rounded-xl shadow-sm border border-gray-200 bg-gray-50 hover:shadow-md transition-all"
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <img
+                          src={comment.user?.avatar || "/placeholder-avatar.png"}
+                          alt="avatar"
+                          className="w-9 h-9 rounded-full object-cover"
+                        />
+                        <div>
+                          <p className="font-medium text-gray-800">
+                            {comment.user?.firstName} {comment.user?.lastName}
+                            {comment.user?.role === "admin" && (
+                              <span className="ml-2 text-blue-600 text-xs flex items-center gap-1">
+                                <MdAdminPanelSettings className="text-sm" />
+                                Admin
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-700 pl-12">{comment.content}</p>
+
+                      {/* Replies */}
+                      {comment.replies?.map((reply) => (
+                        <motion.div
+                          key={reply.id}
+                          initial={{ opacity: 0, x: 10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className="ml-12 mt-3 flex gap-3"
+                        >
+                          <img
+                            src={reply.user?.avatar || "/placeholder-avatar.png"}
+                            alt="avatar"
+                            className="w-8 h-8 rounded-full object-cover mt-1"
+                          />
+                          <div>
+                            <p className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                              {reply.user?.firstName} {reply.user?.lastName}
+                              {reply.user?.role === "admin" && (
+                                <span className="text-blue-600 text-xs flex items-center gap-1">
+                                  <MdAdminPanelSettings className="text-sm" />
+                                  Admin
+                                </span>
+                              )}
+                            </p>
+                            <p className="text-sm text-gray-700">{reply.content}</p>
+                          </div>
+                        </motion.div>
+                      ))}
+
+                      {/* Reply Input */}
+                      <div className="mt-4 ml-12 flex items-start gap-3">
+                        <input
+                          value={replies[comment.id] || ""}
+                          onChange={(e) =>
+                            setReplies({ ...replies, [comment.id]: e.target.value })
+                          }
+                          placeholder="Write a reply..."
+                          className="flex-1 border border-gray-300 p-2 rounded-lg focus:ring-blue-300 focus:ring-1 outline-none"
+                        />
+                        <Button size="sm" onClick={() => postReply(comment.id)}>
+                          Reply
+                        </Button>
+                      </div>
+                    </motion.div>
+                  ))}
+                  <div className="flex items-start gap-3 mb-4">
+                    <img
+                      src="/placeholder-avatar.png"
+                      alt="your avatar"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <input
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      placeholder="Write a comment..."
+                      className="flex-1 border border-gray-300 rounded-xl p-2 focus:ring-2 focus:ring-blue-300 outline-none"
+                    />
+                    <Button onClick={postComment} className="ml-2">
+                      Post
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Card>
         </motion.div>
       </main>

@@ -3,6 +3,13 @@ const Tour = require('./tour');
 const Like = require('./like');
 const Bookmark = require('./bookmark');
 const Rating = require('./rating');
+const Comment = require('./comment');
+const Reply = require('./reply');
+
+Comment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+Reply.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+Comment.hasMany(Reply, { foreignKey: 'commentId', as: 'replies' }); 
+
 
 // Likes
 User.belongsToMany(Tour, { through: Like, as: 'LikedTours', foreignKey: 'userId' });

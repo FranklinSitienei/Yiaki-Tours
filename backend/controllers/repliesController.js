@@ -1,44 +1,38 @@
-const { Reply } = require('../models/reply');
+const Reply = require('../models/reply');
+const User = require('../models/user');
 
 const repliesController = {
-  // Create a reply (users and admins)
   async createReply(req, res) {
     try {
-      const { content } = req.body;
-      const { commentId } = req.params;
-      const userId = req.user?.id || req.admin?.id;
-      const role = req.admin ? 'admin' : 'user';
-
-      const newReply = await Reply.create({ content, commentId, userId, role });
-      res.status(201).json(newReply);
+      const reply = await Reply.create({
+        commentId: req.params.commentId,
+        userId: req.user.id,
+        content: req.body.content,
+      });
+      res.status(201).json(reply);
     } catch (err) {
-      res.status(500).json({ message: 'Failed to create reply', error: err.message });
+      res.status(500).json({ message: 'Error creating reply', error: err.message });
     }
   },
 
-  // Get replies for a specific comment
   async getReplies(req, res) {
     try {
-      const { commentId } = req.params;
-      const replies = await Reply.findAll({ where: { commentId } });
-      res.status(200).json(replies);
+      const replies = await Reply.findAll({
+        where: { commentId: req.params.commentId },
+        include: [{ model: User, attributes: ['id', 'name', 'role'] }],
+      });
+      res.json(replies);
     } catch (err) {
-      res.status(500).json({ message: 'Failed to fetch replies', error: err.message });
+      res.status(500).json({ message: 'Error fetching replies', error: err.message });
     }
   },
 
-  // Delete a reply (admin only)
   async deleteReply(req, res) {
     try {
-      const { replyId } = req.params;
-
-      const reply = await Reply.findByPk(replyId);
-      if (!reply) return res.status(404).json({ message: 'Reply not found' });
-
-      await reply.destroy();
-      res.status(200).json({ message: 'Reply deleted successfully' });
+      const result = await Reply.destroy({ where: { id: req.params.replyId } });
+      res.json({ message: "Reply deleted", result });
     } catch (err) {
-      res.status(500).json({ message: 'Failed to delete reply', error: err.message });
+      res.status(500).json({ message: 'Error deleting reply', error: err.message });
     }
   },
 };

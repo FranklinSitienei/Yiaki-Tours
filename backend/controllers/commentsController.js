@@ -1,45 +1,57 @@
-const { Comment } = require('../models/comment');
+const Comment = require('../models/comment');
+const Reply = require('../models/reply');
+const User = require('../models/user');
 
 const commentsController = {
-  // Create a comment
   async createComment(req, res) {
     try {
-      const { content } = req.body;
-      const { tourId } = req.params;
-      const userId = req.user.id;
-
-      const newComment = await Comment.create({ content, tourId, userId });
-      res.status(201).json(newComment);
+      const comment = await Comment.create({
+        userId: req.user.id,
+        tourId: req.params.tourId,
+        content: req.body.content,
+      });
+      res.status(201).json(comment);
     } catch (err) {
-      res.status(500).json({ message: 'Failed to create comment', error: err.message });
+      res.status(500).json({ message: 'Error creating comment', error: err.message });
     }
   },
 
-  // Get comments for a specific tour
   async getComments(req, res) {
     try {
-      const { tourId } = req.params;
-      const comments = await Comment.findAll({ where: { tourId } });
-      res.status(200).json(comments);
+      const comments = await Comment.findAll({
+        where: { tourId: req.params.tourId },
+        include: [
+          {
+            model: Reply,
+            as: 'replies',
+            include: [
+              {
+                model: User,
+                as: 'user',
+                attributes: ['id', 'firstName', 'lastName', 'role', 'avatar']
+              }
+            ]
+          },
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'firstName', 'lastName', 'role', 'avatar']
+          }
+        ],
+        order: [['createdAt', 'DESC']],
+      });      
+      res.json(comments);
     } catch (err) {
-      res.status(500).json({ message: 'Failed to fetch comments', error: err.message });
+      res.status(500).json({ message: 'Error fetching comments', error: err.message });
     }
   },
 
-  // Delete a comment (by the user who created it)
   async deleteComment(req, res) {
     try {
-      const { commentId } = req.params;
-      const userId = req.user.id;
-
-      const comment = await Comment.findByPk(commentId);
-      if (!comment) return res.status(404).json({ message: 'Comment not found' });
-      if (comment.userId !== userId) return res.status(403).json({ message: 'Unauthorized' });
-
-      await comment.destroy();
-      res.status(200).json({ message: 'Comment deleted successfully' });
+      const result = await Comment.destroy({ where: { id: req.params.commentId } });
+      res.json({ message: "Comment deleted", result });
     } catch (err) {
-      res.status(500).json({ message: 'Failed to delete comment', error: err.message });
+      res.status(500).json({ message: 'Error deleting comment', error: err.message });
     }
   },
 };
