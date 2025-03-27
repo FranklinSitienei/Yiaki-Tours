@@ -259,7 +259,66 @@ const TourDetails = () => {
             <CardContent className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-3xl font-bold">{tour.title}</h2>
-                <div className="flex items-center gap-4">
+                
+              </div>
+
+              <p className="text-gray-600 mb-4">
+                {tour.description || "No description available."}
+              </p>
+
+
+              <div className="flex items-center mb-4">
+                <span className="font-semibold mr-2">Your Rating:</span>
+                {[1, 2, 3, 4, 5].map((star) =>
+                  rated >= star ? (
+                    <BsStarFill
+                      key={star}
+                      className="text-yellow-500 cursor-pointer"
+                      onClick={() => handleRating(star)}
+                    />
+                  ) : (
+                    <BsStar
+                      key={star}
+                      className="text-gray-400 cursor-pointer"
+                      onClick={() => handleRating(star)}
+                    />
+                  )
+                )}
+                
+              </div>
+
+              <div className="mb-4">
+                <p className="font-semibold">Select Transport:</p>
+                <div className="flex space-x-4 mt-2">
+                  {Object.entries(transportOptions).map(([key, option]) => (
+                    <button
+                      key={key}
+                      onClick={() => setSelectedTransport(key)}
+                      className={`flex items-center gap-2 px-4 py-2 border rounded-lg ${selectedTransport === key
+                        ? "bg-blue-100 border-blue-500"
+                        : "bg-gray-100"
+                        }`}
+                    >
+                      {option.icon}
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center mt-6">
+                <p className="text-lg font-semibold">
+                  Total Price: ${totalPrice.toFixed(2)}
+                </p>
+                <Button
+                  onClick={handleBooking}
+                  disabled={booked}
+                  className={booked ? "bg-green-600 hover:bg-green-700" : ""}
+                >
+                  {booked ? "Booked" : "Book Now"}
+                </Button>
+              </div>
+              <div className="flex items-center gap-10">
                   <button onClick={handleLike}>
                     {liked ? (
                       <AiFillHeart className="text-red-600 w-6 h-6" />
@@ -305,62 +364,6 @@ const TourDetails = () => {
                     {showComments ? "Hide Comments" : "Show Comments"}
                   </Button>
                 </div>
-              </div>
-
-              <p className="text-gray-600 mb-4">
-                {tour.description || "No description available."}
-              </p>
-
-              <div className="flex items-center mb-4">
-                <span className="font-semibold mr-2">Your Rating:</span>
-                {[1, 2, 3, 4, 5].map((star) =>
-                  rated >= star ? (
-                    <BsStarFill
-                      key={star}
-                      className="text-yellow-500 cursor-pointer"
-                      onClick={() => handleRating(star)}
-                    />
-                  ) : (
-                    <BsStar
-                      key={star}
-                      className="text-gray-400 cursor-pointer"
-                      onClick={() => handleRating(star)}
-                    />
-                  )
-                )}
-              </div>
-
-              <div className="mb-4">
-                <p className="font-semibold">Select Transport:</p>
-                <div className="flex space-x-4 mt-2">
-                  {Object.entries(transportOptions).map(([key, option]) => (
-                    <button
-                      key={key}
-                      onClick={() => setSelectedTransport(key)}
-                      className={`flex items-center gap-2 px-4 py-2 border rounded-lg ${selectedTransport === key
-                        ? "bg-blue-100 border-blue-500"
-                        : "bg-gray-100"
-                        }`}
-                    >
-                      {option.icon}
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center mt-6">
-                <p className="text-lg font-semibold">
-                  Total Price: ${totalPrice.toFixed(2)}
-                </p>
-                <Button
-                  onClick={handleBooking}
-                  disabled={booked}
-                  className={booked ? "bg-green-600 hover:bg-green-700" : ""}
-                >
-                  {booked ? "Booked" : "Book Now"}
-                </Button>
-              </div>
             </CardContent>
             <AnimatePresence>
               {showComments && (
@@ -382,7 +385,7 @@ const TourDetails = () => {
                     >
                       <div className="flex items-center gap-3 mb-2">
                         <img
-                          src={comment.user?.avatar || "/placeholder-avatar.png"}
+                          src={comment.user?.avatar}
                           alt="avatar"
                           className="w-9 h-9 rounded-full object-cover"
                         />
@@ -409,7 +412,7 @@ const TourDetails = () => {
                           className="ml-12 mt-3 flex gap-3"
                         >
                           <img
-                            src={reply.user?.avatar || "/placeholder-avatar.png"}
+                            src={reply.user?.avatar}
                             alt="avatar"
                             className="w-8 h-8 rounded-full object-cover mt-1"
                           />
