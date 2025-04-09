@@ -7,7 +7,7 @@ const Comments = ({ tourId, currentUser }) => {
 
   useEffect(() => {
     // Fetch comments for the tour
-    fetch(`http://localhost:3000/tours/${tourId}/comments`)
+    fetch(`https://yiaki-tours.onrender.com/tours/${tourId}/comments`)
       .then((res) => res.json())
       .then((data) => setComments(data))
       .catch((err) => console.error('Failed to fetch comments:', err));
@@ -15,7 +15,7 @@ const Comments = ({ tourId, currentUser }) => {
 
   const handleCommentSubmit = (data) => {
     // Post new comment or reply
-    fetch(`http://localhost:3000/tours/${tourId}/comments`, {
+    fetch(`https://yiaki-tours.onrender.com/tours/${tourId}/comments`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

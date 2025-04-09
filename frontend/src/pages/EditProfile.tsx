@@ -18,7 +18,7 @@ const EditProfile = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:3000/users/profile", {
+    fetch("https://yiaki-tours.onrender.com/users/profile", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(res => res.json())
@@ -48,7 +48,7 @@ const EditProfile = () => {
       formData.append(key, value);
     });
 
-    const res = await fetch("http://localhost:3000/users/update", {
+    const res = await fetch("https://yiaki-tours.onrender.com/users/update", {
       method: "PUT",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,

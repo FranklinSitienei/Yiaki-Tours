@@ -110,19 +110,19 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-nature-300 shrink-0 mt-1" />
                 <span className="text-nature-100">
-                  123 Nature Way, Wilderness Park,<br />California, 95000
+                  Nairobi,<br /> Kenya
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-nature-300 shrink-0" />
                 <a href="tel:+1-555-123-4567" className="text-nature-100 hover:text-white transition-colors">
-                  +1 (555) 123-4567
+                  0712345678
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-nature-300 shrink-0" />
                 <a href="mailto:info@naturetrek.com" className="text-nature-100 hover:text-white transition-colors">
-                  info@naturetrek.com
+                  info@yiakitours.com
                 </a>
               </li>
             </ul>
@@ -134,7 +134,7 @@ const Footer = () => {
       <div className="border-t border-nature-800 py-6">
         <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-nature-300 text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} NatureTrek. All rights reserved.
+            © {new Date().getFullYear()} Yiaki Tours. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <a href="#" className="text-nature-300 hover:text-white text-sm transition-colors">

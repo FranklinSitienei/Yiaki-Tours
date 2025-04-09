@@ -18,7 +18,7 @@ const Navbar = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
   
-        const res = await fetch("http://localhost:3000/users/profile", {
+        const res = await fetch("https://yiaki-tours.onrender.com/users/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

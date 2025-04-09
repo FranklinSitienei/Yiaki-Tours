@@ -21,7 +21,7 @@ const [displayedTours, setDisplayedTours] = useState([]);
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const response = await fetch("http://localhost:3000/tours");
+        const response = await fetch("https://yiaki-tours.onrender.com/tours");
         if (!response.ok) throw new Error(`Error fetching tours: ${response.statusText}`);
         const data = await response.json();
         setTours(data);

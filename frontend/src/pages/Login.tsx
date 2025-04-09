@@ -36,8 +36,8 @@ const AuthPage = () => {
     e.preventDefault();
 
     const url = isLogin
-      ? "http://localhost:3000/users/login"
-      : "http://localhost:3000/users/register";
+      ? "https://yiaki-tours.onrender.com/users/login"
+      : "https://yiaki-tours.onrender.com/users/register";
 
     const payload = isLogin
       ? {
@@ -79,7 +79,7 @@ const AuthPage = () => {
   };
 
   const handleOAuthLogin = (provider: "google" | "apple") => {
-    window.location.href = `http://localhost:3000/users/auth/${provider}`;
+    window.location.href = `https://yiaki-tours.onrender.com/users/auth/${provider}`;
   };
 
   return (

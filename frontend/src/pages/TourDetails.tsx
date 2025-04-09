@@ -57,7 +57,7 @@ const TourDetails = () => {
   useEffect(() => {
     const fetchTour = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/tours/${id}`);
+        const res = await fetch(`https://yiaki-tours.onrender.com/tours/${id}`);
         const data = await res.json();
         setTour(data);
       } catch (err) {
@@ -67,7 +67,7 @@ const TourDetails = () => {
 
     const fetchUserInteractions = async () => {
       try {
-        const res = await fetch("http://localhost:3000/users/profile", {
+        const res = await fetch("https://yiaki-tours.onrender.com/users/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -94,14 +94,14 @@ const TourDetails = () => {
   }, [showComments]);
 
   const fetchComments = async () => {
-    const res = await fetch(`http://localhost:3000/tours/${id}/comments`);
+    const res = await fetch(`https://yiaki-tours.onrender.com/tours/${id}/comments`);
     const data = await res.json();
     setComments(data);
   };
 
   const postComment = async () => {
     if (!newComment.trim()) return;
-    const res = await fetch(`http://localhost:3000/tours/${id}/comments`, {
+    const res = await fetch(`https://yiaki-tours.onrender.com/tours/${id}/comments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -115,7 +115,7 @@ const TourDetails = () => {
 
   const postReply = async (commentId: number) => {
     if (!replies[commentId]?.trim()) return;
-    const res = await fetch(`http://localhost:3000/tours/comments/${commentId}/replies`, {
+    const res = await fetch(`https://yiaki-tours.onrender.com/tours/comments/${commentId}/replies`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -136,7 +136,7 @@ const TourDetails = () => {
   };
 
   const handleLike = async () => {
-    await fetch(`http://localhost:3000/tours/${id}/like`, {
+    await fetch(`https://yiaki-tours.onrender.com/tours/${id}/like`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -147,7 +147,7 @@ const TourDetails = () => {
   };
 
   const handleBookmark = async () => {
-    await fetch(`http://localhost:3000/tours/${id}/bookmark`, {
+    await fetch(`https://yiaki-tours.onrender.com/tours/${id}/bookmark`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -159,7 +159,7 @@ const TourDetails = () => {
 
   const handleRating = async (ratingValue: number) => {
     if (rated === ratingValue) {
-      await fetch(`http://localhost:3000/tours/${id}/unrate`, {
+      await fetch(`https://yiaki-tours.onrender.com/tours/${id}/unrate`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -167,7 +167,7 @@ const TourDetails = () => {
       });
       setRated(0);
     } else {
-      await fetch(`http://localhost:3000/tours/${id}/rate`, {
+      await fetch(`https://yiaki-tours.onrender.com/tours/${id}/rate`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -181,7 +181,7 @@ const TourDetails = () => {
 
   const handleBooking = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/tours/${id}/book`, {
+      const res = await fetch(`https://yiaki-tours.onrender.com/${id}/book`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

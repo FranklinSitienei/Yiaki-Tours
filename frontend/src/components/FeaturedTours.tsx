@@ -23,7 +23,7 @@ const FeaturedTours = () => {
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/tours');
+        const response = await axios.get('https://yiaki-tours.onrender.com/tours');
         const topThree = response.data.slice(0, 3); // pick top 3
         setTours(topThree);
       } catch (error) {
